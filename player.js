@@ -2,11 +2,22 @@
 var sound;
 var tracks;
 var count = 0;
-// $(window).load(function() { // better to use $(document).ready(function(){
-//     $('.List li').on('click touchstart', function() {
-//         $('.Div').slideDown('500');
-//     });
-// });
+$(document).ready(function(){
+    $('#playbackSpeed').on('click touchstart', function() {
+       updateControls();
+    });
+    $('#revTime').on('click touchstart', function() {
+        updateControls();
+     });
+     $('#revDecay').on('click touchstart', function() {
+        updateControls();
+     });
+     $('#revMix').on('click touchstart', function() {
+        updateControls();
+     });
+     onLoad();
+});
+
 function onLoad(){
     $.get("/getTracks", function(data){
         tracks = JSON.parse(data);
@@ -14,7 +25,7 @@ function onLoad(){
         startPlayer(tracks);
     });
 }
-onLoad();
+
 
 function hitRandom (){
     $('.songTitle').html('Loading...');
