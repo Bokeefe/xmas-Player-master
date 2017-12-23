@@ -3,7 +3,7 @@ var sound;
 var tracks;
 var count = 0;
 $(document).ready(function(){
-    $('.button-panel').on('click touchstart', function() {
+    $('.shuffle').on('click touchstart', function() {
         hitRandom();
      });
 
@@ -19,7 +19,26 @@ $(document).ready(function(){
      $('#revMix').on('click touchstart', function() {
         updateControls();
      });
+
+     $('#playPause').on('click touchstart', function() {
+         
+                console.log(sound.playing);
+               if(sound.playing){
+                $('#play-button').removeClass('fa-pause');
+                $('#play-button').addClass('fa-play');
+                    sound.pause();
+                
+
+               }else {
+                $('#play-button').removeClass('fa-play');
+                   $('#play-button').addClass('fa-pause');
+                   sound.play();
+               }
+
+     });
      onLoad();
+
+
 });
 
 function onLoad(){
@@ -57,10 +76,11 @@ function startPlayer(tracks){
         $('.songTitle').html(JSON.stringify(tracks[songNum].title));
         $('.songArtist').html(JSON.stringify(tracks[songNum].artist));
         if(sound.playing){
-          setOnEnd(tracks);
+            $('#play-button').toggleClass('fa-pause');
+            setOnEnd(tracks);
         }
         count++;
-        console.log(tracks[songNum].title,tracks[songNum].artist);
+        console.log(count+" | "+tracks[songNum].title+" by :"+tracks[songNum].artist);
     });
 }
 
@@ -92,7 +112,9 @@ function updateControls(){
 }
 
 function setOnEnd(x){
-  sound.sourceNode.onended = function() {
-    startPlayer(tracks);
-  }
+    
+        
+//   sound.sourceNode.onended = function() {
+//     startPlayer(tracks);
+//   }
 }
