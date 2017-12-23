@@ -49,7 +49,8 @@ let counter = 0;
         counter++;
         return info;   
       } else {
-        console.log("error: ",item);
+        info.title = info.srcpath;
+        info.artists = "????";
       }
     });
 

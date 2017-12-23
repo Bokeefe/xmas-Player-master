@@ -3,6 +3,10 @@ var sound;
 var tracks;
 var count = 0;
 $(document).ready(function(){
+    $('.button-panel').on('click touchstart', function() {
+        hitRandom();
+     });
+
     $('#playbackSpeed').on('click touchstart', function() {
        updateControls();
     });
@@ -26,12 +30,12 @@ function onLoad(){
     });
 }
 
+function hitPause(){
+    sound.pause();
+}
 
 function hitRandom (){
-    $('.songTitle').html('Loading...');
-    $('.songArtist').html('Loading...');
-    sound.stop();
-    onLoad();
+    location.reload();
 }
 
 function startPlayer(tracks){
