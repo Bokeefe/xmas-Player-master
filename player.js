@@ -20,21 +20,18 @@ $(document).ready(function(){
         updateControls();
      });
 
-     $('#playPause').on('click touchstart', function() {
-         
-                console.log(sound.playing);
-               if(sound.playing){
+     $('#playPause').on('click', function() {
+        if(sound.playing){
                 $('#play-button').removeClass('fa-pause');
                 $('#play-button').addClass('fa-play');
-                    sound.pause();
-                
+                sound.pause();
+            
 
-               }else {
+            } else {
                 $('#play-button').removeClass('fa-play');
-                   $('#play-button').addClass('fa-pause');
-                   sound.play();
-               }
-
+                $('#play-button').addClass('fa-pause');
+                sound.play();
+            }
      });
      onLoad();
 
@@ -111,10 +108,10 @@ function updateControls(){
   sound.sourceNode.playbackRate.value = $('#playbackSpeed').val()*.01;
 }
 
-function setOnEnd(x){
-    
-        
-//   sound.sourceNode.onended = function() {
-//     startPlayer(tracks);
-//   }
+function setOnEnd(x){     
+  sound.sourceNode.onended = function() {
+    if($('#play-button').hasClass('fa-pause')){
+        startPlayer(tracks);
+    }
+  };
 }
