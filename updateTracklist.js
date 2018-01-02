@@ -29,7 +29,6 @@ let counter = 0;
         delete info.imageBuffer;
         delete info.partOfSet;
         delete info.composer;
-        delete info.genre;
         delete info.year;
         delete info.publisher;
         delete info.bpm;

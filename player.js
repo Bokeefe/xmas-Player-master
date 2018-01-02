@@ -1,10 +1,11 @@
 "use strict";
+
 var sound;
 var tracks;
 var count = 0;
 $(document).ready(function(){
     $('.shuffle').on('click touchstart', function() {
-        hitRandom();
+        hitRandom(tracks);
      });
 
     $('#playbackSpeed').on('click touchstart', function() {
@@ -21,16 +22,18 @@ $(document).ready(function(){
      });
 
      $('#playPause').on('click', function() {
+         let savedTime = sound.sourceNode.context.currentTime;
         if(sound.playing){
                 $('#play-button').removeClass('fa-pause');
                 $('#play-button').addClass('fa-play');
-                sound.pause();
-            
-
+                sound.pause();            
             } else {
                 $('#play-button').removeClass('fa-play');
                 $('#play-button').addClass('fa-pause');
                 sound.play();
+                sound.offsetTime = savedTime;
+                sound.sourceNode.playbackRate.value = getPlaybackSpeedSetting();
+
             }
      });
      onLoad();
@@ -50,8 +53,9 @@ function hitPause(){
     sound.pause();
 }
 
-function hitRandom (){
-    location.reload();
+function hitRandom (x){
+    sound.stop();
+     startPlayer(x);
 }
 
 function startPlayer(tracks){
@@ -60,25 +64,34 @@ function startPlayer(tracks){
         source: 'file',
         options: { path: '/audio/'+tracks[songNum].srcpath }
     }, function() {
-        var reverb = new Pizzicato.Effects.Reverb({
-            time: $('#revTime').val()*1,
-            decay:$('#revDecay').val()*1,
-            reverse: false,
-            mix: $('#revMix').val()*.01
-        });
-        sound.addEffect(reverb);
-        sound.play();
-        
-        sound.sourceNode.playbackRate.value = getPlaybackSpeedSetting();
         $('.songTitle').html(JSON.stringify(tracks[songNum].title));
         $('.songArtist').html(JSON.stringify(tracks[songNum].artist));
+
+        !sound.effects[0] ? firstAddEffect() : updateControls();
+        
+        sound.play();
+
         if(sound.playing){
             $('#play-button').toggleClass('fa-pause');
             setOnEnd(tracks);
         }
+        sound.sourceNode.playbackRate.value = getPlaybackSpeedSetting();
+
         count++;
-        console.log(count+" | "+tracks[songNum].title+" by :"+tracks[songNum].artist);
+        console.log(count+" | "+tracks[songNum].title+" by : "+tracks[songNum].artist);
     });
+}
+
+function firstAddEffect(){
+    var reverb = new Pizzicato.Effects.Reverb({
+        time: $('#revTime').val()*1,
+        decay:$('#revDecay').val()*1,
+        reverse: false,
+        mix: $('#revMix').val()*.01
+    });
+
+    sound.addEffect(reverb);
+
 }
 
 function getRandomTrack(tracks) {
@@ -88,6 +101,7 @@ function getRandomTrack(tracks) {
 function randomPlaylist(tracks){
     var arr = [];
     var playlist = [];
+
     while(arr.length < tracks.length){
         var randomnumber = Math.floor(Math.random()* tracks.length) + 1;
         if(arr.indexOf(randomnumber) > -1) continue;
@@ -110,8 +124,10 @@ function updateControls(){
 
 function setOnEnd(x){     
   sound.sourceNode.onended = function() {
-    if($('#play-button').hasClass('fa-pause')){
-        startPlayer(tracks);
-    }
-  };
+        if($('#play-button').hasClass('fa-pause')){
+            startPlayer(tracks);
+        } else {
+            sound.pause();
+        }
+    };
 }
